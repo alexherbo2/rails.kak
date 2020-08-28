@@ -28,3 +28,6 @@ Add [`rails.kak`](rc/rails.kak) to your autoload or source it manually.
 Type `:rails-█` to discover the commands and their aliases.
 
 All edit commands can be entered without argument.
+
+Press `gf` to jump to relevant places.
+For example, in a method definition, jump between the controller and its view.

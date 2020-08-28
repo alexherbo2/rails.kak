@@ -6,6 +6,8 @@ provide-module rails %{
 
   # Internal variables
   declare-option -docstring 'Rails root path' str rails_root_path %sh(git rev-parse --show-toplevel)
+  declare-option -docstring 'Rails controller name' str rails_controller_name
+  declare-option -docstring 'Rails action name' str rails_action_name
 
   # Rails detection
   define-command -hidden rails-detect %{
@@ -22,6 +24,17 @@ provide-module rails %{
       hook -always -once window WinSetOption 'filetype=.*' %{
         rails-remove-aliases
       }
+    }
+
+    # Navigation – Controller ⇒ View
+    hook -group rails global WinCreate '.+/app/controllers/(\w+)_controller\.rb' %{
+      set-option window rails_controller_name %val{hook_param_capture_1}
+      map -docstring 'View' window goto f '<esc>: rails-navigate-from-controller-to-view<ret>'
+    }
+
+    # Navigation – Controller ⇒ View (Application)
+    hook -group rails global WinCreate '.+/app/controllers/application_controller\.rb' %{
+      map -docstring 'View' window goto f '<esc>: rails-edit-view-application<ret>'
     }
   }
 
@@ -103,8 +116,13 @@ provide-module rails %{
     try %{
       edit "%opt{rails_root_path}/app/views/%arg{1}"
     } catch %{
-      edit "%opt{rails_root_path}/app/views/layouts/application.html.erb"
+      rails-edit-view-application
     }
+  }
+
+  # Rails – Edit – View – Application
+  define-command rails-edit-view-application -docstring 'Edit application view' %{
+    edit "%opt{rails_root_path}/app/views/layouts/application.html.erb"
   }
 
   # Rails – Edit – Controller
@@ -166,6 +184,19 @@ provide-module rails %{
       edit "%opt{rails_root_path}/app/assets/stylesheets/application.css.scss"
     } catch %{
       edit "%opt{rails_root_path}/app/assets/stylesheets/application.css"
+    }
+  }
+
+  # Navigation – Controller ⇒ View
+  define-command -hidden rails-navigate-from-controller-to-view -docstring 'Navigate from the controller to its view' %{
+    # Search and set action name
+    evaluate-commands -draft %{
+      execute-keys '<a-/>^\h+def\h+(\w+)<ret>1s<ret>'
+      set-option window rails_action_name %val{selection}
+    }
+
+    try %{
+      edit -existing "%opt{rails_root_path}/app/views/%opt{rails_controller_name}/%opt{rails_action_name}.html.erb"
     }
   }
 }
