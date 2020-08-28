@@ -208,7 +208,7 @@ provide-module rails %{
   define-command -hidden rails-navigate-from-controller-to-view -docstring 'Navigate from the controller to its view' %{
     # Search and set action name
     evaluate-commands -draft %{
-      execute-keys '<a-/>^\h+def\h+(\w+)<ret>1s<ret>'
+      execute-keys '<space><a-x>;<a-/>^\h+def\h+(\w+)<ret>1s<ret>'
       set-option window rails_action_name %val{selection}
     }
 
@@ -221,6 +221,7 @@ provide-module rails %{
   define-command -hidden rails-navigate-from-view-to-controller -docstring 'Navigate from the view to its controller' %{
     try %{
       edit -existing "%opt{rails_root_path}/app/controllers/%opt{rails_controller_name}_controller.rb"
+      execute-keys 'gg'
       evaluate-commands -save-regs '/' %{
         set-register / "^\h+def\h+(%opt{rails_action_name})"
         execute-keys '/<ret>1s<ret>'
