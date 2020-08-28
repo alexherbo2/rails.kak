@@ -119,8 +119,13 @@ provide-module rails %{
     try %{
       edit "%opt{rails_root_path}/app/models/%arg{1}"
     } catch %{
-      edit "%opt{rails_root_path}/app/models/application_record.rb"
+      rails-edit-model-application
     }
+  }
+
+  # Rails – Edit – Model – Application
+  define-command rails-edit-model-application -docstring 'Edit application model' %{
+    edit "%opt{rails_root_path}/app/models/application_record.rb"
   }
 
   # Rails – Edit – View
