@@ -36,6 +36,18 @@ provide-module rails %{
     hook -group rails global WinCreate '.+/app/controllers/application_controller\.rb' %{
       map -docstring 'View' window goto f '<esc>: rails-edit-view-application<ret>'
     }
+
+    # Navigation – View ⇒ Controller
+    hook -group rails global WinCreate '.+/app/views/(\w+)/(\w+)\.html\.erb' %{
+      set-option window rails_controller_name %val{hook_param_capture_1}
+      set-option window rails_action_name %val{hook_param_capture_2}
+      map -docstring 'Controller' window goto f '<esc>: rails-navigate-from-view-to-controller<ret>'
+    }
+
+    # Navigation – View ⇒ Controller (Application)
+    hook -group rails global WinCreate '.+/app/views/layouts/application\.html\.erb' %{
+      map -docstring 'Controller' window goto f '<esc>: rails-edit-controller-application<ret>'
+    }
   }
 
   # Disable Rails
@@ -130,8 +142,13 @@ provide-module rails %{
     try %{
       edit "%opt{rails_root_path}/app/controllers/%arg{1}"
     } catch %{
-      edit "%opt{rails_root_path}/app/controllers/application_controller.rb"
+      rails-edit-controller-application
     }
+  }
+
+  # Rails – Edit – Controller – Application
+  define-command rails-edit-controller-application -docstring 'Edit application controller' %{
+    edit "%opt{rails_root_path}/app/controllers/application_controller.rb"
   }
 
   # Rails – Edit – Policy
@@ -197,6 +214,18 @@ provide-module rails %{
 
     try %{
       edit -existing "%opt{rails_root_path}/app/views/%opt{rails_controller_name}/%opt{rails_action_name}.html.erb"
+    }
+  }
+
+  # Navigation – View ⇒ Controller
+  define-command -hidden rails-navigate-from-view-to-controller -docstring 'Navigate from the view to its controller' %{
+    try %{
+      edit -existing "%opt{rails_root_path}/app/controllers/%opt{rails_controller_name}_controller.rb"
+      evaluate-commands -save-regs '/' %{
+        set-register / "^\h+def\h+(%opt{rails_action_name})"
+        execute-keys '/<ret>1s<ret>'
+      }
+      execute-keys 'vt'
     }
   }
 }
