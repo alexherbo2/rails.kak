@@ -5,6 +5,7 @@ hook global ModuleLoaded rails %{
 provide-module rails %{
 
   # Internal variables
+  declare-option -docstring 'Rails enabled' bool rails_enabled
   declare-option -docstring 'Rails root path' str rails_root_path %sh(git rev-parse --show-toplevel)
   declare-option -docstring 'Rails controller name' str rails_controller_name
   declare-option -docstring 'Rails action name' str rails_action_name
@@ -16,14 +17,11 @@ provide-module rails %{
 
   # Enable Rails
   define-command rails-enable -docstring 'Enable Rails' %{
-    hook -group rails global WinSetOption 'filetype=.*' %{
-      # Aliases
-      rails-add-aliases
+    set-option global rails_enabled true
 
-      # Clean settings
-      hook -always -once window WinSetOption 'filetype=.*' %{
-        rails-remove-aliases
-      }
+    # Aliases
+    hook -group rails global WinCreate .* %{
+      rails-add-aliases
     }
 
     # Navigation – Controller ⇒ View
@@ -53,7 +51,8 @@ provide-module rails %{
   # Disable Rails
   define-command rails-disable -docstring 'Disable Rails' %{
     remove-hooks global rails
-    rails-remove-aliases
+
+    set-option global rails_enabled false
   }
 
   # Add aliases
