@@ -127,8 +127,31 @@ provide-module rails %{
   }
 
   # Rails – Show routes
-  define-command rails-show-routes -params .. -docstring 'Rails – Show routes' %{
+  # Command completion
+  # Complete with the values in the rails_routes_prefixes option.
+  declare-option -hidden str-list rails_routes_prefixes
+  declare-option -hidden str rails_routes_completion %{
+    eval "set -- $kak_quoted_opt_rails_routes_prefixes"
+    printf '%s\n' "$@"
+  }
+
+  # Command implementation
+  define-command rails-show-routes -params .. -shell-script-candidates %opt{rails_routes_completion} -docstring 'Rails – Show routes' %{
     $ :rails-show-routes %arg{@}
+
+    # Command completion
+    # Set the rails_routes_prefixes option with the resulting routes in fifo.
+    #
+    # HTTP request methods
+    # https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+    hook -always -once global BufOpenFifo .* %{
+      hook -always -once global BufCloseFifo .* %{
+        evaluate-commands -draft %{
+          execute-keys '%1s(\w+)\h+(GET|POST|PUT|DELETE|PATCH)<ret>'
+          set-option global rails_routes_prefixes %val{selections}
+        }
+      }
+    }
   }
 
   # Rails – Edit – Model
