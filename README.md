@@ -5,6 +5,10 @@
 [Ruby on Rails]: https://rubyonrails.org
 [Kakoune]: https://kakoune.org
 
+## Features
+
+- Easy navigation of the Rails directory structure.
+
 ## Dependencies
 
 - [connect.kak]
@@ -33,3 +37,13 @@ All edit commands can be entered without argument.
 
 Press `gf` to jump to relevant places.
 For example, in a method definition, jump between the controller and its view.
+
+## Configuration
+
+**Example** – Map `gd` and `gD` to jump to the definition and implementation:
+
+``` kak
+# Go to definition and implementation
+map global goto -docstring 'Definition' d '<esc>: lsp-definition<ret>'
+map global goto -docstring 'Implementation' D '<esc>: lsp-implementation<ret>'
+```
