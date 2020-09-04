@@ -7,8 +7,10 @@
 
 ## Dependencies
 
+- [connect.kak]
 - [fd]
 
+[connect.kak]: https://github.com/alexherbo2/connect.kak
 [fd]: https://github.com/sharkdp/fd
 
 ### Recommended plugins

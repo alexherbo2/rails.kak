@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Rails – Show routes
+if [ $# = 0 ]; then
+  :fifo rails routes
+else
+  :fifo rails routes --grep "$@"
+fi

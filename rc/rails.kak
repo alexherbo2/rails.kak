@@ -1,8 +1,17 @@
+# Save the rails paths
+declare-option -hidden str rails_plugin_path %sh(dirname "$kak_source")
+declare-option -hidden str rails_connect_path "%opt{rails_plugin_path}/connect"
+
 hook global ModuleLoaded rails %{
   rails-detect
 }
 
 provide-module rails %{
+  # Modules
+  require-module connect
+
+  # Register our paths
+  set-option -add global connect_paths "%opt{rails_connect_path}/aliases" "%opt{rails_connect_path}/commands"
 
   # Internal variables
   declare-option -docstring 'Rails enabled' bool rails_enabled
@@ -73,6 +82,8 @@ provide-module rails %{
 
     # Routes
     alias window routes rails-edit-routes
+    alias window routes? rails-show-routes
+    alias window rr rails-show-routes
 
     # Database
     alias window migration rails-edit-migration
@@ -102,6 +113,8 @@ provide-module rails %{
 
     # Routes
     unalias window routes
+    unalias window routes?
+    unalias window rr # [r]ails [r]outes
 
     # Database
     unalias window migration
@@ -111,6 +124,11 @@ provide-module rails %{
     # JavaScript and CSS
     unalias window js
     unalias window css
+  }
+
+  # Rails – Show routes
+  define-command rails-show-routes -params .. -docstring 'Rails – Show routes' %{
+    $ :rails-show-routes %arg{@}
   }
 
   # Rails – Edit – Model
