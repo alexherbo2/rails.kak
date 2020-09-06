@@ -29,7 +29,13 @@
 
 Add [`rails.kak`](rc/rails.kak) to your autoload or source it manually.
 
+``` kak
+require-module rails
+```
+
 ## Usage
+
+Call `rails-detect` when starting Kakoune.
 
 Type `:rails-█` to discover the commands and their aliases.
 

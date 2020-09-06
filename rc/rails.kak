@@ -2,10 +2,6 @@
 declare-option -hidden str rails_plugin_path %sh(dirname "$kak_source")
 declare-option -hidden str rails_connect_path "%opt{rails_plugin_path}/connect"
 
-hook global ModuleLoaded rails %{
-  rails-detect
-}
-
 provide-module rails %{
   # Modules
   require-module connect
@@ -275,5 +271,3 @@ provide-module rails %{
     }
   }
 }
-
-require-module rails
