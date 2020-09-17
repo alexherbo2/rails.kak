@@ -11,7 +11,7 @@ provide-module rails %{
 
   # Internal variables
   declare-option -docstring 'Rails enabled' bool rails_enabled
-  declare-option -docstring 'Rails root path' str rails_root_path %sh(git rev-parse --show-toplevel)
+  declare-option -docstring 'Rails root path' str rails_root_path %sh(git rev-parse --show-toplevel 2> /dev/null)
   declare-option -docstring 'Rails controller name' str rails_controller_name
   declare-option -docstring 'Rails action name' str rails_action_name
 
