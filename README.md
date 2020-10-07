@@ -50,6 +50,6 @@ For example, in a method definition, jump between the controller and its view.
 
 ``` kak
 # Go to definition and implementation
-map global goto -docstring 'Definition' d '<esc>: lsp-definition<ret>'
-map global goto -docstring 'Implementation' D '<esc>: lsp-implementation<ret>'
+map -docstring 'Definition' global goto d '<esc>: lsp-definition<ret>'
+map -docstring 'Implementation' global goto D '<esc>: lsp-implementation<ret>'
 ```
